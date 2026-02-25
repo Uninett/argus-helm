@@ -8,4 +8,4 @@ Once you have helm set up, add the repo locally by using the following command:
 helm repo add argus https://uninett.github.io/argus-helm/
 ```
 
-`helm serach repo argus` will show the helm charts in this repository, which should only be one chart for deploying Argus.
+`helm search repo argus` will show the helm charts in this repository, which should only be one chart for deploying Argus.
