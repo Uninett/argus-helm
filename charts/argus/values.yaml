@@ -8,7 +8,7 @@ image:
   repository: ghcr.io/uninett/argus
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 2.6.0
+  tag: 2.7.0
 
 imagePullSecrets: []
 nameOverride: ""
@@ -42,9 +42,9 @@ service:
 
 ingress:
   enabled: true
-  className: "nginx"
+  className: "haproxy"
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/ingress.class: haproxy
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: argus.local
@@ -118,8 +118,8 @@ argus:
 
   # These are used if you do not want to use existing Kubernetes secrets
   djangoSecret: "change-me"
-  argusUsername: "argus"
-  argusPassword: "argus"
+  argusUsername: "admin"
+  argusPassword: "admin"
   databaseUsername: "argus"
   databasePassword: "argus"
 
