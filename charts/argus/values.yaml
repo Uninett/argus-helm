@@ -44,7 +44,6 @@ ingress:
   enabled: true
   className: "haproxy"
   annotations: {}
-    # kubernetes.io/ingress.class: haproxy
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: argus.local
