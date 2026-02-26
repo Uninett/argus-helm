@@ -80,9 +80,23 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.argus.argusExistingSecret | quote }}
                   key: {{ .Values.argus.secretKeys.djangoSecretKey | quote }}
+            - name: ARGUS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.argus.argusExistingSecret | quote }}
+                  key: {{ .Values.argus.secretKeys.argusUsernameKey | quote }}
+            - name: ARGUS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.argus.argusExistingSecret | quote }}
+                  key: {{ .Values.argus.secretKeys.argusPasswordKey | quote }}
             {{ else}}
             - name: SECRET_KEY
               value: {{ .Values.argus.djangoSecret | quote }}
+            - name: ARGUS_USERNAME
+              value: {{ .Values.argus.argusUsername | quote }}
+            - name: ARGUS_PASSWORD
+              value: {{ .Values.argus.argusPassword | quote }}
             {{ end }}
             {{ if .Values.argus.databaseExistingSecret }}
             - name: DATABASE_USERNAME
@@ -95,25 +109,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.argus.databaseExistingSecret | quote }}
                   key: {{ .Values.argus.secretKeys.databasePasswordKey | quote }}
-            - name: ARGUS_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.argus.argusExistingSecret | quote }}
-                  key: {{ .Values.argus.secretKeys.argusUsernameKey | quote }}
-            - name: ARGUS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.argus.argusExistingSecret | quote }}
-                  key: {{ .Values.argus.secretKeys.argusPasswordKey | quote }}
             {{ else }}
             - name: DATABASE_USERNAME
               value: {{ .Values.argus.databaseUsername | quote }}
             - name: DATABASE_PASSWORD
               value: {{ .Values.argus.databasePassword | quote }}
-            - name: ARGUS_USERNAME
-              value: {{ .Values.argus.argusUsername | quote }}
-            - name: ARGUS_PASSWORD
-              value: {{ .Values.argus.argusPassword | quote }}
             {{ end }}
 
             {{ if .Values.postgresql.enabled }}
