@@ -118,8 +118,8 @@ argus:
 
   # These are used if you do not want to use existing Kubernetes secrets
   djangoSecret: "change-me"
-  argusUsername: "argus"
-  argusPassword: "argus"
+  argusUsername: "admin"
+  argusPassword: "admin"
   databaseUsername: "argus"
   databasePassword: "argus"
 
