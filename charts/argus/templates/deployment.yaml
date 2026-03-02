@@ -55,7 +55,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             - name: PORT
-              value: {{ .Values.argus.port }}
+              value: {{ .Values.argus.port | quote }}
             - name: ARGUS_FRONTEND_URL
               value: {{ .Values.argus.frontendUrl | quote }}
             - name: TIME_ZONE
