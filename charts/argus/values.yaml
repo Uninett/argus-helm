@@ -93,8 +93,7 @@ postgresql:
         database: "argus"
         existingSecret: "database"
         secretKeys:
-          userPasswordKey: "username"
-          databasePasswordKey: "password"
+          userPasswordKey: "password"
       service:
         ports:
           postgresql: 5432
