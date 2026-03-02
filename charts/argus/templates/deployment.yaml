@@ -41,7 +41,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8000
+              containerPort: {{ .Values.argus.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -54,6 +54,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: PORT
+              value: {{ .Values.argus.port }}
             - name: ARGUS_FRONTEND_URL
               value: {{ .Values.argus.frontendUrl | quote }}
             - name: TIME_ZONE
