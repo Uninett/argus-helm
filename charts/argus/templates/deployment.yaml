@@ -56,6 +56,8 @@ spec:
           env:
             - name: PORT
               value: {{ .Values.argus.port | quote }}
+            - name: STATIC_ROOT
+              value: {{ .Values.argus.staticRoot | quote }}
             - name: ARGUS_FRONTEND_URL
               value: {{ .Values.argus.frontendUrl | quote }}
             - name: TIME_ZONE

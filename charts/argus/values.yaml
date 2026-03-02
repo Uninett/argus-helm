@@ -101,6 +101,7 @@ postgresql:
 argus:
   # This is the port that Argus will listen on. This also configuers which port the container listens to, since they have to match.
   port: 8000
+  staticRoot: "/static/"
   debug: "true"
   djangoSettingsModule : "argus.site.settings.dockerdev"
   frontendUrl: "http://localhost:8000"
