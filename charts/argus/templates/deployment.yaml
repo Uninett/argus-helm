@@ -129,6 +129,16 @@ spec:
             {{ end }}
             - name: DATABASE_URL
               value: postgresql://$(DATABASE_USERNAME):$(DATABASE_PASSWORD)@$(DATABASE_HOST):$(DATABASE_PORT)/$(DATABASE_NAME)
+            {{ if .Values.argus.rtExistingSecret }}
+            - name: ARGUS_RT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.argus.rtExistingSecret | quote }}
+                  key: {{ .Values.argus.secretKeys.rtTokenKey | quote }}
+            {{ else }}
+            - name: ARGUS_RT_TOKEN
+              value: {{ .Values.argus.rtToken | quote }}
+            {{ end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

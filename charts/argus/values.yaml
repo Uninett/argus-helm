@@ -123,9 +123,11 @@ argus:
   argusPassword: "admin"
   databaseUsername: "argus"
   databasePassword: "argus"
+  rtToken: "change-me"
 
   databaseExistingSecret: "database"
   argusExistingSecret: "argus"
+  rtExistingSecret: "rt"
   secretKeys:
     # overrides databaseUsername. Only used if databaseExistingSecret is set.
     databaseUsernameKey: "username"
@@ -137,3 +139,5 @@ argus:
     argusUsernameKey: "username"
     # overrides argusPassword. Only used if argusExistingSecret is set.
     argusPasswordKey: "password"
+    # overrides rtToken. Only used if rtExistingSecret is set
+    rtTokenKey: "token"
