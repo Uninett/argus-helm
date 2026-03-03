@@ -112,6 +112,7 @@ argus:
   emailUseTLS: "true"
   defaultFromEmail: "noreply@example.com"
   databaseName: "argus"
+  loggingModule: ""
 
   # Only used if postgresql.enabled is false, otherwise the
   # chart will auto generate hostname for the dependency
