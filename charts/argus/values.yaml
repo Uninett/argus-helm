@@ -129,15 +129,15 @@ argus:
   argusExistingSecret: "argus"
   rtExistingSecret: "rt"
   secretKeys:
-    # overrides databaseUsername. Only used if databaseExistingSecret is set.
+    # overrides argus.databaseUsername. Only used if databaseExistingSecret is set.
     databaseUsernameKey: "username"
-    # overrides databasePassword. Only used if databaseExistingSecret is set.
+    # overrides argus.databasePassword. Only used if databaseExistingSecret is set.
     databasePasswordKey: "password"
-    # overrides djangoSecret. Only used if argusExistingSecret is set.
+    # overrides argus.djangoSecret. Only used if argusExistingSecret is set.
     djangoSecretKey: "djangosecret"
-    # overrides argusUsername. Only used if argusExistingSecret is set.
+    # overrides argus.argusUsername. Only used if argusExistingSecret is set.
     argusUsernameKey: "username"
-    # overrides argusPassword. Only used if argusExistingSecret is set.
+    # overrides argus.argusPassword. Only used if argusExistingSecret is set.
     argusPasswordKey: "password"
-    # overrides rtToken. Only used if rtExistingSecret is set
+    # overrides argus.rtToken. Only used if rtExistingSecret is set
     rtTokenKey: "token"
