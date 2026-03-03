@@ -88,12 +88,12 @@ postgresql:
   global:
     postgresql:
       auth:
-        username: "argus"
-        password: "argus"
         database: "argus"
-        existingSecret: "database"
+        username: "argus"
+        password: ""
+        existingSecret: ""
         secretKeys:
-          userPasswordKey: "password"
+          userPasswordKey: ""
       service:
         ports:
           postgresql: 5432
