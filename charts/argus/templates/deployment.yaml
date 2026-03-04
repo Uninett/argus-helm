@@ -43,21 +43,10 @@ spec:
             - name: http
               containerPort: {{ .Values.argus.port }}
               protocol: TCP
-          {{ if .Values.livenessProbe }}
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          {{ else}}
-          livenessProbe: null
-          {{ end }}
-          {{ if .Values.readinessProbe }}
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          {{ else }}
-          readinessProbe: null
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
           {{ end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
