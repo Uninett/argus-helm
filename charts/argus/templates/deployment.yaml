@@ -94,12 +94,12 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.argus.argusExistingSecret | quote }}
                   key: {{ .Values.argus.secretKeys.djangoSecretKey | quote }}
-            - name: ARGUS_USERNAME
+            - name: ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.argus.argusExistingSecret | quote }}
                   key: {{ .Values.argus.secretKeys.argusUsernameKey | quote }}
-            - name: ARGUS_PASSWORD
+            - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.argus.argusExistingSecret | quote }}
@@ -107,9 +107,9 @@ spec:
             {{ else}}
             - name: SECRET_KEY
               value: {{ .Values.argus.djangoSecret | quote }}
-            - name: ARGUS_USERNAME
+            - name: ADMIN_USERNAME
               value: {{ .Values.argus.argusUsername | quote }}
-            - name: ARGUS_PASSWORD
+            - name: ADMIN_PASSWORD
               value: {{ .Values.argus.argusPassword | quote }}
             {{ end }}
             {{ if .Values.argus.databaseExistingSecret }}
