@@ -122,6 +122,7 @@ argus:
   djangoSecret: "change-me"
   argusUsername: "admin"
   argusPassword: "admin"
+  argusEmail: ""
   databaseUsername: "argus"
   databasePassword: "argus"
   rtToken: "change-me"

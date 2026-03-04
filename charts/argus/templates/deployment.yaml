@@ -88,6 +88,8 @@ spec:
               value: {{ .Values.argus.databasePort | quote }}
             - name: DJANGO_LOGGING_MODULE
               value: {{ .Values.argus.loggingModule | quote }}
+            - name: ARGUS_EMAIL
+              value: {{ .Values.argus.argusEmail | quote }}
             {{ if .Values.argus.argusExistingSecret }}
             - name: SECRET_KEY
               valueFrom:
