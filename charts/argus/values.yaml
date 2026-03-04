@@ -131,10 +131,14 @@ argus:
   argusEmail: ""
   databaseUsername: "argus"
   databasePassword: "argus"
+  # Available in container as environment variable ARGUS_RT_TOKEN
   rtToken: "change-me"
 
+  # Name of k8s secret containing database credentials
   databaseExistingSecret: ""
+  # Name of k8s secret containing initial admin user credentials and django secret key
   argusExistingSecret: ""
+  # Name of k8s secret containing RT token secret
   rtExistingSecret: ""
   secretKeys:
     # overrides argus.databaseUsername. Only used if databaseExistingSecret is set.
@@ -150,35 +154,48 @@ argus:
     # overrides argus.rtToken. Only used if rtExistingSecret is set
     rtTokenKey: "token"
   sso:
+    # Available in container as environment variable SOCIAL_AUTH_REDIRECT_IS_HTTPS
     redirectIsHTTPS: true
-    OIDCEndpoint: "https://auth.dataporten.no"
-    OIDCUsernameKey: "email"
-    OIDCScope: "userid-feide"
+    # Available in container as environment variable SOCIAL_AUTH_OIDC_ENDPOINT
+    OIDCEndpoint: ""
+    # Available in container as environment variable SOCIAL_AUTH_OIDC_USERNAME_KEY
+    OIDCUsernameKey: ""
+    # Available in container as environment variable SOCIAL_AUTH_OIDC_SCOPE
+    OIDCScope: ""
+    # Available in container as environment variable SOCIAL_AUTH_DATAPORTEN_KEY
+    dataportenKey: ""
+    # Available in container as environment variable SOCIAL_AUTH_DATAPORTEN_SECRET
+    dataportenSecret: ""
+    # Available in container as environment variable SOCIAL_AUTH_DATAPORTEN_EMAIL_KEY
+    dataportenEmailKey: ""
+    # Available in container as environment variable SOCIAL_AUTH_DATAPORTEN_EMAIL_SECRET
+    dataportenEmailSecret: ""
+    # Available in container as environment variable SOCIAL_AUTH_DATAPORTEN_FEIDE_KEY
+    dataportenFeideKey: ""
+    # Available in container as environment variable SOCIAL_AUTH_DATAPORTEN_FEIDE_SECRET
+    dataportenFeideSecret: ""
+    # Available in container as environment variable SOCIAL_AUTH_OIDC_KEY
+    OIDCKey: ""
+    # Available in container as environment variable SOCIAL_AUTH_OIDC_SECRET
+    OIDCSecret: ""
 
-    dataportenKey: "change-me"
-    dataportenSecret: "change-me"
-    dataportenEmailKey: "change-me"
-    dataportenEmailSecret: "change-me"
-    dataportenFeideKey: "change-me"
-    dataportenFeideSecret: "change-me"
-    OIDCKey: "change-me"
-    OIDCSecret: "change-me"
-
+    # Name of k8s secret containing sso related secrets
     existingSecret: ""
+    # These values define keys in the argus.sso.existingSecret secret. They are only used if argus.sso.existingSecret is set.
     secretKeys:
-      # overrides argus.sso.dataportenKey. Only used if argus.sso.existingSecret is set.
-      dataportenKeyKey: "change-me"
-      # overrides argus.sso.dataportenSecret. Only used if argus.sso.existingSecret is set.
-      dataportenSecretKey: "change-me"
-      # overrides argus.sso.dataportenEmailKey. Only used if argus.sso.existingSecret is set.
-      dataportenEmailKeyKey: "change-me"
-      # overrides argus.sso.dataportenEmailSecret. Only used if argus.sso.existingSecret is set.
-      dataportenEmailSecretKey: "change-me"
-      # overrides argus.sso.dataportenFeideKey. Only used if argus.sso.existingSecret is set.
-      dataportenFeideKeyKey: "change-me"
-      # overrides argus.sso.dataportenFeideSecret. Only used if argus.sso.existingSecret is set.
-      dataportenFeideSecretKey: "change-me"
-      # overrides argus.sso.OIDCKey. Only used if argus.sso.existingSecret is set.
-      OIDCKeyKey: "change-me"
-      # overrides argus.sso.OIDCSecret. Only used if argus.sso.existingSecret is set.
-      OIDCSecretKey: "change-me"
+      # overrides argus.sso.dataportenKey
+      dataportenKeyKey: ""
+      # overrides argus.sso.dataportenSecret
+      dataportenSecretKey: ""
+      # overrides argus.sso.dataportenEmailKey
+      dataportenEmailKeyKey: ""
+      # overrides argus.sso.dataportenEmailSecret
+      dataportenEmailSecretKey: ""
+      # overrides argus.sso.dataportenFeideKey
+      dataportenFeideKeyKey: ""
+      # overrides argus.sso.dataportenFeideSecret
+      dataportenFeideSecretKey: ""
+      # overrides argus.sso.OIDCKey
+      OIDCKeyKey: ""
+      # overrides argus.sso.OIDCSecret
+      OIDCSecretKey: ""
