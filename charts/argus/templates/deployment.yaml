@@ -48,12 +48,16 @@ spec:
             httpGet:
               path: /
               port: http
+          {{ else}}
+          livenessProbe: null
           {{ end }}
           {{ if .Values.readinessProbe }}
           readinessProbe:
             httpGet:
               path: /
               port: http
+          {{ else }}
+          readinessProbe: null
           {{ end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
