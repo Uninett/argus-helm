@@ -33,6 +33,12 @@ spec:
           command: ['sh', '-c',
             'until pg_isready -h {{ .Release.Name }}-postgresql -p 5432;
             do echo waiting for database; sleep 2; done;']
+      {{ if .Values.argus.djangoSettingsModuleConfigMap }}
+      volumes:
+      - name: django-settings
+        configMap:
+          name: {{ .Values.argus.djangoSettingsModuleConfigMap }}
+      {{ end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -47,6 +53,11 @@ spec:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
+          {{ if .Values.argus.djangoSettingsModuleConfigMap }}
+          volumeMounts:
+            - name: django-settings
+              mountPath: "/extrapython/settings"
+          {{ end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

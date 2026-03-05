@@ -120,6 +120,11 @@ argus:
   databaseName: "argus"
   loggingModule: ""
 
+  # Name of configmap containing Django settings module.
+  # argus.djangoSettingsModule must match the name of the file defined in the configmap, without the .py extension.
+  # For example, if the configmap contains file called "mysettings.py", then argus.djangoSettingsModule should be set to "settings.mysettings".
+  djangoSettingsModuleConfigMap: ""
+
   # Only used if postgresql.enabled is false, otherwise the
   # chart will auto generate hostname for the dependency
   databaseHost: "my-postgres.com"
