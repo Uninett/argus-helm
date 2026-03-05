@@ -102,6 +102,8 @@ spec:
               value: {{ .Values.argus.djangoLoggingModule | quote }}
             - name: ARGUS_EMAIL
               value: {{ .Values.argus.argusEmail | quote }}
+            - name: ARGUS_SEND_NOTIFICATIONS
+              value: {{ .Values.argus.sendNotifications | quote }}
             {{ if .Values.argus.argusExistingSecret }}
             - name: SECRET_KEY
               valueFrom:

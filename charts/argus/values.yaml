@@ -119,6 +119,7 @@ argus:
   defaultFromEmail: "noreply@example.com"
   databaseName: "argus"
   djangoLoggingModule: ""
+  sendNotifications: "true"
 
   # Name of configmap containing Django settings module.
   # argus.djangoSettingsModule must match the name of the file defined in the configmap, without the .py extension.
