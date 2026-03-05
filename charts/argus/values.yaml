@@ -123,13 +123,15 @@ argus:
 
   # Name of configmap containing Django settings module.
   # argus.djangoSettingsModule must match the name of the file defined in the configmap, without the .py extension.
-  # For example, if the configmap contains a file called "mysettings.py", then argus.djangoSettingsModule should be set to "settings.mysettings".
+  # For example, if the configmap contains a file called "mysettings.py", then argus.djangoSettingsModule should be set to "argussettings.mysettings".
+  # argussettings is the folder the configmap is mounted to.
   djangoSettingsModuleConfigMap: ""
 
   # Name of configmap containing Django logging module.
   # argus.djangoLoggingModule must match the name of the file defined in the configmap, without the .py extension.
   # For example, if the configmap contains a file called "mylogging.py" that contains a logging dictionary called PROD,
-  # then argus.djangoLoggingModule should be set to "logging.mylogging.PROD".
+  # then argus.djangoLoggingModule should be set to "arguslogging.mylogging.PROD". arguslogging is the folder the
+  # configmap is mounted to.
   djangoLoggingModuleConfigMap: ""
 
   # Only used if postgresql.enabled is false, otherwise the

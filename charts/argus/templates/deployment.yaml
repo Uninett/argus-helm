@@ -65,11 +65,11 @@ spec:
           {{ end }}
           {{ if .Values.argus.djangoSettingsModuleConfigMap }}
           - name: django-settings
-            mountPath: "/extrapython/settings"
+            mountPath: "/extrapython/argussettings"
           {{ end }}
           {{ if .Values.argus.djangoLoggingModuleConfigMap }}
           - name: django-logging
-            mountPath: "/extrapython/logging"
+            mountPath: "/extrapython/arguslogging"
           {{ end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
