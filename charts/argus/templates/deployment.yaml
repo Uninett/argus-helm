@@ -86,7 +86,7 @@ spec:
             - name: DATABASE_PORT
               value: {{ .Values.argus.databasePort | quote }}
             - name: DJANGO_LOGGING_MODULE
-              value: {{ .Values.argus.loggingModule | quote }}
+              value: {{ .Values.argus.djangoLoggingModule | quote }}
             - name: ARGUS_EMAIL
               value: {{ .Values.argus.argusEmail | quote }}
             {{ if .Values.argus.argusExistingSecret }}
