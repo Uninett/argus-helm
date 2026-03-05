@@ -142,7 +142,8 @@ argus:
   argusEmail: ""
   databaseUsername: "argus"
   databasePassword: "argus"
-  # Available in container as environment variable ARGUS_RT_TOKEN
+
+  # Available in container as environment variable ARGUS_RT_TOKEN. Not used by default.
   rtToken: "change-me"
 
   # Name of k8s secret containing database credentials
@@ -164,6 +165,8 @@ argus:
     argusPasswordKey: "password"
     # overrides argus.rtToken. Only used if rtExistingSecret is set
     rtTokenKey: "token"
+
+  # These values are not used by default but are useful if you need to configure SSO in your settings file.
   sso:
     # Available in container as environment variable SOCIAL_AUTH_REDIRECT_IS_HTTPS
     redirectIsHTTPS: true
