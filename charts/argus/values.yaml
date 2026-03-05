@@ -109,7 +109,7 @@ argus:
   port: 8000
   staticRoot: "/static/"
   debug: "true"
-  djangoSettingsModule : "argus.site.settings.dockerdev"
+  djangoSettingsModule : "argus.site.settings.prod"
   frontendUrl: "http://localhost:8000"
   timeZone: "Europe/Oslo"
   databasePort: 5432
@@ -122,12 +122,12 @@ argus:
 
   # Name of configmap containing Django settings module.
   # argus.djangoSettingsModule must match the name of the file defined in the configmap, without the .py extension.
-  # For example, if the configmap contains file called "mysettings.py", then argus.djangoSettingsModule should be set to "settings.mysettings".
+  # For example, if the configmap contains a file called "mysettings.py", then argus.djangoSettingsModule should be set to "settings.mysettings".
   djangoSettingsModuleConfigMap: ""
 
   # Name of configmap containing Django logging module.
   # argus.djangoLoggingModule must match the name of the file defined in the configmap, without the .py extension.
-  # For example, if the configmap contains file called "mylogging.py", then argus.djangoLoggingModule should be set to "logging.mylogging".
+  # For example, if the configmap contains a file called "mylogging.py", then argus.djangoLoggingModule should be set to "logging.mylogging".
   djangoLoggingModuleConfigMap: ""
 
   # Only used if postgresql.enabled is false, otherwise the
