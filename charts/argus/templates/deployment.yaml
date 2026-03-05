@@ -33,11 +33,18 @@ spec:
           command: ['sh', '-c',
             'until pg_isready -h {{ .Release.Name }}-postgresql -p 5432;
             do echo waiting for database; sleep 2; done;']
-      {{ if .Values.argus.djangoSettingsModuleConfigMap }}
+      {{ if or .Values.argus.djangoSettingsModuleConfigMap .Values.argus.djangoLoggingModuleConfigMap }}
       volumes:
+      {{ end }}
+      {{ if .Values.argus.djangoSettingsModuleConfigMap }}
       - name: django-settings
         configMap:
           name: {{ .Values.argus.djangoSettingsModuleConfigMap }}
+      {{ end }}
+      {{ if .Values.argus.djangoLoggingModuleConfigMap }}
+      - name: django-logging
+        configMap:
+          name: {{ .Values.argus.djangoLoggingModuleConfigMap }}
       {{ end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -53,10 +60,16 @@ spec:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
-          {{ if .Values.argus.djangoSettingsModuleConfigMap }}
+          {{ if or .Values.argus.djangoSettingsModuleConfigMap .Values.argus.djangoLoggingModuleConfigMap }}
           volumeMounts:
-            - name: django-settings
-              mountPath: "/extrapython/settings"
+          {{ end }}
+          {{ if .Values.argus.djangoSettingsModuleConfigMap }}
+          - name: django-settings
+            mountPath: "/extrapython/settings"
+          {{ end }}
+          {{ if .Values.argus.djangoLoggingModuleConfigMap }}
+          - name: django-logging
+            mountPath: "/extrapython/logging"
           {{ end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

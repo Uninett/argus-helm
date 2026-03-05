@@ -125,6 +125,11 @@ argus:
   # For example, if the configmap contains file called "mysettings.py", then argus.djangoSettingsModule should be set to "settings.mysettings".
   djangoSettingsModuleConfigMap: ""
 
+  # Name of configmap containing Django logging module.
+  # argus.djangoLoggingModule must match the name of the file defined in the configmap, without the .py extension.
+  # For example, if the configmap contains file called "mylogging.py", then argus.djangoLoggingModule should be set to "logging.mylogging".
+  djangoLoggingModuleConfigMap: ""
+
   # Only used if postgresql.enabled is false, otherwise the
   # chart will auto generate hostname for the dependency
   databaseHost: "my-postgres.com"
