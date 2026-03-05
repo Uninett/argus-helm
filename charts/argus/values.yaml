@@ -128,7 +128,8 @@ argus:
 
   # Name of configmap containing Django logging module.
   # argus.djangoLoggingModule must match the name of the file defined in the configmap, without the .py extension.
-  # For example, if the configmap contains a file called "mylogging.py", then argus.djangoLoggingModule should be set to "logging.mylogging".
+  # For example, if the configmap contains a file called "mylogging.py" that contains a logging dictionary called PROD,
+  # then argus.djangoLoggingModule should be set to "logging.mylogging.PROD".
   djangoLoggingModuleConfigMap: ""
 
   # Only used if postgresql.enabled is false, otherwise the
