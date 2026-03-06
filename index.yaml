@@ -2,6 +2,21 @@ apiVersion: v1
 entries:
   argus:
   - apiVersion: v2
+    appVersion: 2.8.0
+    created: "2026-03-06T12:17:16.796682416Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: "18.5"
+    description: A Helm chart for Argus with optional PostgreSQL dependency
+    digest: d3b4532cddc6fa2af0132152924a91ec0146fe367bca28d79d10eae35a3f7430
+    name: argus
+    type: application
+    urls:
+    - https://github.com/Uninett/argus-helm/releases/download/argus-0.6.0/argus-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
     appVersion: 2.7.0
     created: "2026-03-06T11:48:25.657298571Z"
     dependencies:
@@ -256,4 +271,4 @@ entries:
     urls:
     - https://github.com/Uninett/argus-helm/releases/download/argus-0.1.0/argus-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-06T11:48:25.657399098Z"
+generated: "2026-03-06T12:17:16.7968181Z"
