@@ -94,8 +94,8 @@ postgresql:
   global:
     postgresql:
       auth:
-        database: "argus"
-        username: "argus"
+        database: ""
+        username: ""
         password: ""
         existingSecret: ""
         secretKeys:
