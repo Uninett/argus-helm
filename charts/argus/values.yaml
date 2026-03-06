@@ -136,21 +136,21 @@ argus:
 
   # Only used if postgresql.enabled is false, otherwise the
   # chart will auto generate hostname for the dependency
-  databaseHost: "my-postgres.com"
+  databaseHost: ""
 
   # These are used if you do not want to use existing Kubernetes secrets
-  djangoSecret: "change-me"
-  argusUsername: "admin"
-  argusPassword: "admin"
+  djangoSecret: ""
+  argusUsername: ""
+  argusPassword: ""
   argusEmail: ""
-  databaseUsername: "argus"
-  databasePassword: "argus"
+  databaseUsername: ""
+  databasePassword: ""
   # Optional way to define connection to database, with a url like "postgres://user:password@hostname:port/database".
   # If this is set, it overrides the other database connection settings.
   databaseUrl: ""
 
   # Available in container as environment variable ARGUS_RT_TOKEN. Not used by default.
-  rtToken: "change-me"
+  rtToken: ""
 
   # Name of k8s secret containing database credentials
   databaseExistingSecret: ""
@@ -160,19 +160,19 @@ argus:
   rtExistingSecret: ""
   secretKeys:
     # overrides argus.databaseUsername. Only used if databaseExistingSecret is set.
-    databaseUsernameKey: "username"
+    databaseUsernameKey: ""
     # overrides argus.databasePassword. Only used if databaseExistingSecret is set.
-    databasePasswordKey: "password"
+    databasePasswordKey: ""
     # overrides argus.databaseUrl. Overrides other db settings if set. Only used if databaseExistingSecret is set.
     databaseUrlKey: ""
     # overrides argus.djangoSecret. Only used if argusExistingSecret is set.
-    djangoSecretKey: "djangosecret"
+    djangoSecretKey: ""
     # overrides argus.argusUsername. Only used if argusExistingSecret is set.
-    argusUsernameKey: "username"
+    argusUsernameKey: ""
     # overrides argus.argusPassword. Only used if argusExistingSecret is set.
-    argusPasswordKey: "password"
+    argusPasswordKey: ""
     # overrides argus.rtToken. Only used if rtExistingSecret is set
-    rtTokenKey: "token"
+    rtTokenKey: ""
 
   # These values are not used by default but are useful if you need to configure SSO in your settings file.
   sso:
