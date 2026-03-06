@@ -145,6 +145,9 @@ argus:
   argusEmail: ""
   databaseUsername: "argus"
   databasePassword: "argus"
+  # Optional way to define connection to database, with a url like "postgres://user:password@hostname:port/database".
+  # If this is set, it overrides the other database connection settings.
+  databaseUrl: ""
 
   # Available in container as environment variable ARGUS_RT_TOKEN. Not used by default.
   rtToken: "change-me"
@@ -160,6 +163,8 @@ argus:
     databaseUsernameKey: "username"
     # overrides argus.databasePassword. Only used if databaseExistingSecret is set.
     databasePasswordKey: "password"
+    # overrides argus.databaseUrl. Overrides other db settings if set. Only used if databaseExistingSecret is set.
+    databaseUrlKey: ""
     # overrides argus.djangoSecret. Only used if argusExistingSecret is set.
     djangoSecretKey: "djangosecret"
     # overrides argus.argusUsername. Only used if argusExistingSecret is set.
