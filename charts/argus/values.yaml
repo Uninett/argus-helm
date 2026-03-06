@@ -112,12 +112,10 @@ argus:
   djangoSettingsModule : "dockersettings"
   frontendUrl: "http://localhost:8000"
   timeZone: "Europe/Oslo"
-  databasePort: 5432
   emailHost: "email.example.com"
   emailPort: 587
   emailUseTLS: "true"
   defaultFromEmail: "noreply@example.com"
-  databaseName: "argus"
   djangoLoggingModule: ""
   sendNotifications: "true"
 
@@ -134,6 +132,8 @@ argus:
   # configmap is mounted to.
   djangoLoggingModuleConfigMap: ""
 
+  databasePort: 5432
+  databaseName: ""
   # Only used if postgresql.enabled is false, otherwise the
   # chart will auto generate hostname for the dependency
   databaseHost: ""
