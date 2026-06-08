@@ -1,0 +1,61 @@
+suite: service
+templates:
+  - service.yaml
+tests:
+  - it: should be a Service
+    asserts:
+      - isKind:
+          of: Service
+
+  - it: should have correct name
+    release:
+      name: my-release
+    asserts:
+      - equal:
+          path: metadata.name
+          value: my-release-argus
+
+  - it: should default to ClusterIP type
+    asserts:
+      - equal:
+          path: spec.type
+          value: ClusterIP
+
+  - it: should use specified service type
+    set:
+      service.type: LoadBalancer
+    asserts:
+      - equal:
+          path: spec.type
+          value: LoadBalancer
+
+  - it: should expose port 80 by default
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 80
+
+  - it: should use custom service port
+    set:
+      service.port: 8080
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 8080
+
+  - it: should target the http named port
+    asserts:
+      - equal:
+          path: spec.ports[0].targetPort
+          value: http
+
+  - it: should have selector labels matching deployment
+    release:
+      name: my-release
+    asserts:
+      - equal:
+          path: spec.selector["app.kubernetes.io/name"]
+          value: argus
+      - equal:
+          path: spec.selector["app.kubernetes.io/instance"]
+          value: my-release

@@ -1,0 +1,348 @@
+suite: deployment
+templates:
+  - deployment.yaml
+tests:
+  - it: should be a Deployment
+    asserts:
+      - isKind:
+          of: Deployment
+
+  - it: should have correct name
+    release:
+      name: my-release
+    asserts:
+      - equal:
+          path: metadata.name
+          value: my-release-argus
+
+  - it: should use fullnameOverride when set
+    set:
+      fullnameOverride: my-argus
+    asserts:
+      - equal:
+          path: metadata.name
+          value: my-argus
+
+  - it: should set replica count
+    set:
+      replicaCount: 3
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 3
+
+  - it: should not set replicas when autoscaling is enabled
+    set:
+      autoscaling.enabled: true
+    asserts:
+      - notExists:
+          path: spec.replicas
+
+  - it: should use specified image tag
+    set:
+      image.repository: ghcr.io/uninett/argus
+      image.tag: "2.9.0"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "ghcr.io/uninett/argus:2.9.0"
+
+  - it: should fall back to appVersion when tag is empty
+    set:
+      image.tag: ""
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "ghcr.io/uninett/argus:.+"
+
+  - it: should expose the argus port on the main container
+    set:
+      argus.port: 8000
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8000
+
+  - it: should have db-worker sidecar container
+    asserts:
+      - contains:
+          path: spec.template.spec.containers
+          content:
+            name: argus-db-worker
+          any: true
+
+  - it: should mount django-settings volume when configmap is set
+    set:
+      argus.djangoSettingsModuleConfigMap: my-settings-cm
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: django-settings
+            configMap:
+              name: my-settings-cm
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: django-settings
+            mountPath: "/extrapython/argussettings"
+          any: true
+
+  - it: should mount django-logging volume when configmap is set
+    set:
+      argus.djangoLoggingModuleConfigMap: my-logging-cm
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: django-logging
+            configMap:
+              name: my-logging-cm
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: django-logging
+            mountPath: "/extrapython/arguslogging"
+          any: true
+
+  - it: should not have volumes when no configmaps are set
+    asserts:
+      - notExists:
+          path: spec.template.spec.volumes
+
+  - it: should set DATABASE_HOST to built-in postgresql when enabled
+    release:
+      name: my-release
+    set:
+      postgresql.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_HOST
+            value: my-release-postgresql
+          any: true
+
+  - it: should set DATABASE_HOST to external host when postgresql is disabled
+    set:
+      postgresql.enabled: false
+      argus.databaseHost: "db.example.com"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_HOST
+            value: "db.example.com"
+          any: true
+
+  - it: should use inline django secret key when no existingSecret
+    set:
+      argus.djangoSecret: "my-secret"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SECRET_KEY
+            value: "my-secret"
+          any: true
+
+  - it: should use secretKeyRef for django secret when existingSecret and key are set
+    set:
+      argus.argusExistingSecret: "my-k8s-secret"
+      argus.secretKeys.djangoSecretKey: "django-secret"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: "my-k8s-secret"
+                key: "django-secret"
+          any: true
+
+  - it: should use inline admin credentials when set
+    set:
+      argus.argusUsername: "admin"
+      argus.argusPassword: "pass"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADMIN_USERNAME
+            value: "admin"
+          any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADMIN_PASSWORD
+            value: "pass"
+          any: true
+
+  - it: should use secretKeyRef for admin credentials when existingSecret and keys are set
+    set:
+      argus.argusExistingSecret: "my-k8s-secret"
+      argus.secretKeys.argusUsernameKey: "username"
+      argus.secretKeys.argusPasswordKey: "password"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADMIN_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: "my-k8s-secret"
+                key: "username"
+          any: true
+
+  - it: should use inline database url when set
+    set:
+      argus.databaseUrl: "postgres://user:pass@db:5432/argus"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_URL
+            value: "postgres://user:pass@db:5432/argus"
+          any: true
+
+  - it: should use secretKeyRef for database url when existingSecret and key are set
+    set:
+      argus.databaseExistingSecret: "db-secret"
+      argus.secretKeys.databaseUrlKey: "url"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: "db-secret"
+                key: "url"
+          any: true
+
+  - it: should use secretKeyRef for database username when existingSecret and key are set
+    set:
+      argus.databaseExistingSecret: "db-secret"
+      argus.secretKeys.databaseUsernameKey: "db-user"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: "db-secret"
+                key: "db-user"
+          any: true
+
+  - it: should use secretKeyRef for database password when existingSecret and key are set
+    set:
+      argus.databaseExistingSecret: "db-secret"
+      argus.secretKeys.databasePasswordKey: "db-pass"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "db-secret"
+                key: "db-pass"
+          any: true
+
+  - it: should use inline rt token when no existingSecret
+    set:
+      argus.rtToken: "my-rt-token"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ARGUS_RT_TOKEN
+            value: "my-rt-token"
+          any: true
+
+  - it: should use secretKeyRef for rt token when existingSecret and key are set
+    set:
+      argus.rtExistingSecret: "rt-secret"
+      argus.secretKeys.rtTokenKey: "token"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ARGUS_RT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: "rt-secret"
+                key: "token"
+          any: true
+
+  - it: should set SSO redirect https env var
+    set:
+      argus.sso.redirectIsHTTPS: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SOCIAL_AUTH_REDIRECT_IS_HTTPS
+            value: "true"
+          any: true
+
+  - it: should use secretKeyRef for dataporten key when sso existingSecret and key are set
+    set:
+      argus.sso.existingSecret: "sso-secret"
+      argus.sso.secretKeys.dataportenKeyKey: "dp-key"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SOCIAL_AUTH_DATAPORTEN_KEY
+            valueFrom:
+              secretKeyRef:
+                name: "sso-secret"
+                key: "dp-key"
+          any: true
+
+  - it: should use inline dataporten key when no sso existingSecret
+    set:
+      argus.sso.dataportenKey: "my-dp-key"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SOCIAL_AUTH_DATAPORTEN_KEY
+            value: "my-dp-key"
+          any: true
+
+  - it: should use secretKeyRef for OIDC key when sso existingSecret and key are set
+    set:
+      argus.sso.existingSecret: "sso-secret"
+      argus.sso.secretKeys.OIDCKeyKey: "oidc-key"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SOCIAL_AUTH_OIDC_KEY
+            valueFrom:
+              secretKeyRef:
+                name: "sso-secret"
+                key: "oidc-key"
+          any: true
+
+  - it: should set pod annotations when specified
+    set:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/scrape"]
+          value: "true"
+
+  - it: should set imagePullSecrets when specified
+    set:
+      imagePullSecrets:
+        - name: my-pull-secret
+    asserts:
+      - equal:
+          path: spec.template.spec.imagePullSecrets[0].name
+          value: my-pull-secret
