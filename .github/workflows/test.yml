@@ -18,7 +18,7 @@ jobs:
       - name: Run helm lint
         run: helm lint charts/argus
 
-  unittest:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,3 +32,41 @@ jobs:
 
       - name: Run unit tests
         run: helm unittest charts/argus
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Add Bitnami repo
+        run: helm repo add bitnami https://charts.bitnami.com/bitnami
+
+      - name: Update chart dependencies
+        run: helm dependency update charts/argus
+
+      - name: Create kind cluster
+        uses: helm/kind-action@v1
+
+      - name: Install chart
+        run: |
+          helm install argus charts/argus \
+            --set argus.djangoSecret=ci-django-secret-key \
+            --set argus.argusUsername=admin \
+            --set argus.argusPassword=admin \
+            --set argus.argusEmail=admin@example.com \
+            --set argus.databaseName=argus \
+            --set argus.databaseUsername=argus \
+            --set argus.databasePassword=arguspass \
+            --set postgresql.enabled=true \
+            --set postgresql.global.postgresql.auth.database=argus \
+            --set postgresql.global.postgresql.auth.username=argus \
+            --set postgresql.global.postgresql.auth.password=arguspass \
+            --wait \
+            --timeout 5m
+
+      - name: Run helm tests
+        run: helm test argus
