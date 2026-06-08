@@ -45,8 +45,8 @@ jobs:
       - name: Add Bitnami repo
         run: helm repo add bitnami https://charts.bitnami.com/bitnami
 
-      - name: Update chart dependencies
-        run: helm dependency update charts/argus
+      - name: Build chart dependencies
+        run: helm dependency build charts/argus
 
       - name: Create kind cluster
         uses: helm/kind-action@v1
