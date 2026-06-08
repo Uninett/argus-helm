@@ -2,6 +2,42 @@
 
 Helm repo containing this helm chart: https://uninett.github.io/argus-helm/
 
+## Installation
+
+Add the Helm repo and install the chart:
+
+```bash
+helm repo add argus https://uninett.github.io/argus-helm/
+helm repo update
+helm install argus argus/argus --values <your-values.yaml>
+```
+
+See [charts/argus/values.yaml](charts/argus/values.yaml) for all available configuration options.
+
+## Dependencies
+
+This chart includes [Bitnami's PostgreSQL chart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) as a dependency, enabled by default via `postgresql.enabled=true`. When enabled, a PostgreSQL instance is deployed alongside Argus in the same release.
+
+To use an external database instead, set `postgresql.enabled=false`. Read [values.yaml](charts/argus/values.yaml) to see options on how to configure the connection to the external database.
+
+The postgres dependency is bundled with the Argus chart in the official releases, but if you need to have access to the postgres chart locally you can add it with:
+
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+
+### Updating Chart.lock
+
+`Chart.lock` pins the exact dependency versions used in a release. To upgrade the PostgreSQL dependency to a newer version matching the constraint in `Chart.yaml`, run:
+
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm dependency update charts/argus
+```
+
+This rewrites `Chart.lock` with the resolved versions.
+
 ## Releasing
 
 Releases are created automatically by the [Release Charts](.github/workflows/release.yml) workflow when a commit is pushed to `main`. If a GitHub release for the current chart version already exists, the workflow skips without error.
