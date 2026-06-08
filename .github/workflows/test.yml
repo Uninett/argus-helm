@@ -6,6 +6,18 @@ on:
       - main
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Run helm lint
+        run: helm lint charts/argus
+
   unittest:
     runs-on: ubuntu-latest
     steps:
