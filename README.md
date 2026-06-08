@@ -2,6 +2,16 @@
 
 Helm repo containing this helm chart: https://uninett.github.io/argus-helm/
 
+## Releasing
+
+Releases are created automatically by the [Release Charts](.github/workflows/release.yml) workflow when a commit is pushed to `main`. If a GitHub release for the current chart version already exists, the workflow skips without error.
+
+To release a new version:
+
+1. Bump `version` in [charts/argus/Chart.yaml](charts/argus/Chart.yaml) (follows [semver](https://semver.org/))
+2. If you are tracking a new version of Argus, also update `appVersion` in [charts/argus/Chart.yaml](charts/argus/Chart.yaml) and `image.tag` in [charts/argus/values.yaml](charts/argus/values.yaml)
+3. Merge to `main` — the release workflow runs automatically
+
 ## Development
 
 ### Pre-commit
