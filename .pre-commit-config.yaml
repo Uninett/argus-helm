@@ -1,0 +1,10 @@
+repos:
+  - repo: local
+    hooks:
+      - id: helm-lint
+        name: Helm lint
+        language: system
+        entry: helm lint
+        args: [charts/argus]
+        files: ^charts/argus/
+        pass_filenames: false
