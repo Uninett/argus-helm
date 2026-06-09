@@ -84,7 +84,7 @@ helm unittest -f 'tests/deployment_test.yaml' charts/argus
 
 [Helm chart tests](https://helm.sh/docs/topics/chart_tests/) are defined in [charts/argus/templates/tests/](charts/argus/templates/tests/) and run against a live cluster after installation. Unlike unit tests, they deploy real pods and verify the running chart behaves correctly.
 
-The `charttest` workflow in [.github/workflows/test.yml](.github/workflows/test.yml) runs these automatically on every PR: it spins up a temporary [kind](https://kind.sigs.k8s.io/) cluster, installs the chart, and runs `helm test` against it.
+The `integration-tests` workflow in [.github/workflows/test.yml](.github/workflows/test.yml) runs these automatically on every PR: it spins up a temporary [kind](https://kind.sigs.k8s.io/) cluster, installs the chart, and runs `helm test` against it.
 
 To run chart tests manually against an existing cluster:
 
