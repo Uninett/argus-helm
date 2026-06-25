@@ -75,28 +75,6 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             {{- include "argus.env" . | nindent 12 }}
-        - name: {{ .Chart.Name }}-db-worker
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["/cmd-dbqueue.sh"]
-          {{ if or .Values.argus.djangoSettingsModuleConfigMap .Values.argus.djangoLoggingModuleConfigMap }}
-          volumeMounts:
-          {{ end }}
-          {{ if .Values.argus.djangoSettingsModuleConfigMap }}
-          - name: django-settings
-            mountPath: "/extrapython/argussettings"
-          {{ end }}
-          {{ if .Values.argus.djangoLoggingModuleConfigMap }}
-          - name: django-logging
-            mountPath: "/extrapython/arguslogging"
-          {{ end }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          env:
-            {{- include "argus.env" . | nindent 12 }}
-
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

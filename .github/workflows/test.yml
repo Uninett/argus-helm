@@ -31,7 +31,7 @@ jobs:
         run: helm plugin install https://github.com/helm-unittest/helm-unittest --verify=false
 
       - name: Run unit tests
-        run: helm unittest charts/argus
+        run: helm unittest -f 'tests/**/*_test.yaml' charts/argus
 
   integration-tests:
     runs-on: ubuntu-latest
