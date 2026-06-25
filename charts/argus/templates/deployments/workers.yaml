@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "argus.fullname" . }}-workers
+  labels:
+    {{- include "argus.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "argus.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: workers
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "argus.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: workers
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "argus.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: check-db-ready
+          image: postgres:18.1
+          command: ['sh', '-c',
+            'until pg_isready -h {{ .Release.Name }}-postgresql -p 5432;
+            do echo waiting for database; sleep 2; done;']
+      {{ if or .Values.argus.djangoSettingsModuleConfigMap .Values.argus.djangoLoggingModuleConfigMap }}
+      volumes:
+      {{ end }}
+      {{ if .Values.argus.djangoSettingsModuleConfigMap }}
+      - name: django-settings
+        configMap:
+          name: {{ .Values.argus.djangoSettingsModuleConfigMap }}
+      {{ end }}
+      {{ if .Values.argus.djangoLoggingModuleConfigMap }}
+      - name: django-logging
+        configMap:
+          name: {{ .Values.argus.djangoLoggingModuleConfigMap }}
+      {{ end }}
+      containers:
+        - name: {{ .Chart.Name }}-db-worker
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["/cmd-dbqueue.sh"]
+          {{ if or .Values.argus.djangoSettingsModuleConfigMap .Values.argus.djangoLoggingModuleConfigMap }}
+          volumeMounts:
+          {{ end }}
+          {{ if .Values.argus.djangoSettingsModuleConfigMap }}
+          - name: django-settings
+            mountPath: "/extrapython/argussettings"
+          {{ end }}
+          {{ if .Values.argus.djangoLoggingModuleConfigMap }}
+          - name: django-logging
+            mountPath: "/extrapython/arguslogging"
+          {{ end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            {{- include "argus.env" . | nindent 12 }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

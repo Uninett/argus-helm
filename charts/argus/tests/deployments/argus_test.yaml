@@ -1,0 +1,121 @@
+suite: deployment-argus
+templates:
+  - deployments/argus.yaml
+tests:
+  - it: should be a Deployment
+    asserts:
+      - isKind:
+          of: Deployment
+
+  - it: should have correct name
+    release:
+      name: my-release
+    asserts:
+      - equal:
+          path: metadata.name
+          value: my-release-argus
+
+  - it: should use fullnameOverride when set
+    set:
+      fullnameOverride: my-argus
+    asserts:
+      - equal:
+          path: metadata.name
+          value: my-argus
+
+  - it: should set replica count
+    set:
+      replicaCount: 3
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 3
+
+  - it: should not set replicas when autoscaling is enabled
+    set:
+      autoscaling.enabled: true
+    asserts:
+      - notExists:
+          path: spec.replicas
+
+  - it: should use specified image tag
+    set:
+      image.repository: ghcr.io/uninett/argus
+      image.tag: "2.9.0"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "ghcr.io/uninett/argus:2.9.0"
+
+  - it: should fall back to appVersion when tag is empty
+    set:
+      image.tag: ""
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "ghcr.io/uninett/argus:.+"
+
+  - it: should expose the argus port on the main container
+    set:
+      argus.port: 8000
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].containerPort
+          value: 8000
+
+  - it: should mount django-settings volume when configmap is set
+    set:
+      argus.djangoSettingsModuleConfigMap: my-settings-cm
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: django-settings
+            configMap:
+              name: my-settings-cm
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: django-settings
+            mountPath: "/extrapython/argussettings"
+          any: true
+
+  - it: should mount django-logging volume when configmap is set
+    set:
+      argus.djangoLoggingModuleConfigMap: my-logging-cm
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: django-logging
+            configMap:
+              name: my-logging-cm
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: django-logging
+            mountPath: "/extrapython/arguslogging"
+          any: true
+
+  - it: should not have volumes when no configmaps are set
+    asserts:
+      - notExists:
+          path: spec.template.spec.volumes
+
+  - it: should set pod annotations when specified
+    set:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/scrape"]
+          value: "true"
+
+  - it: should set imagePullSecrets when specified
+    set:
+      imagePullSecrets:
+        - name: my-pull-secret
+    asserts:
+      - equal:
+          path: spec.template.spec.imagePullSecrets[0].name
+          value: my-pull-secret
