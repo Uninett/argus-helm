@@ -71,13 +71,13 @@ helm plugin install https://github.com/helm-unittest/helm-unittest --verify=fals
 Run all tests:
 
 ```bash
-helm unittest charts/argus
+helm unittest -f 'tests/**/*_test.yaml' charts/argus
 ```
 
 Run a single test suite:
 
 ```bash
-helm unittest -f 'tests/deployment_test.yaml' charts/argus
+helm unittest -f 'tests/deployments/argus_test.yaml' charts/argus
 ```
 
 ### Chart tests

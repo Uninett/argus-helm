@@ -59,3 +59,6 @@ tests:
       - equal:
           path: spec.selector["app.kubernetes.io/instance"]
           value: my-release
+      - equal:
+          path: spec.selector["app.kubernetes.io/component"]
+          value: argus
