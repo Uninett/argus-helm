@@ -9,6 +9,12 @@ replicaCount: 1
 workers:
   replicaCount: 1
 
+# CronJob that checks glue service heartbeats (django-admin sync_heartbeat_incidents)
+# and raises/closes incidents for sources that have gone silent.
+heartbeat:
+  enabled: true
+  schedule: "*/5 * * * *"
+
 image:
   repository: ghcr.io/uninett/argus
   pullPolicy: IfNotPresent
