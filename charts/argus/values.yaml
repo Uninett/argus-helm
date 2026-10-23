@@ -9,11 +9,17 @@ replicaCount: 1
 workers:
   replicaCount: 1
 
+# CronJob that checks glue service heartbeats (django-admin sync_heartbeat_incidents)
+# and raises/closes incidents for sources that have gone silent.
+heartbeat:
+  enabled: true
+  schedule: "*/5 * * * *"
+
 image:
   repository: ghcr.io/uninett/argus
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 2.9.1
+  tag: 2.10.2
 
 imagePullSecrets: []
 nameOverride: ""
@@ -67,7 +73,7 @@ readinessProbe:
 
 livenessProbe:
   httpGet:
-    path: /
+    path: /.still-alive
     port: http
 
 resources: {}
