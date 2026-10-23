@@ -1,0 +1,74 @@
+suite: cronjob-heartbeat
+templates:
+  - cronjobs/heartbeat.yaml
+tests:
+  - it: should be a CronJob
+    asserts:
+      - isKind:
+          of: CronJob
+
+  - it: should have correct name
+    release:
+      name: my-release
+    asserts:
+      - equal:
+          path: metadata.name
+          value: my-release-argus-heartbeat
+
+  - it: should not render when disabled
+    set:
+      heartbeat.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should use the default schedule
+    asserts:
+      - equal:
+          path: spec.schedule
+          value: "*/5 * * * *"
+
+  - it: should set schedule from heartbeat.schedule
+    set:
+      heartbeat.schedule: "* * * * *"
+    asserts:
+      - equal:
+          path: spec.schedule
+          value: "* * * * *"
+
+  - it: should run the heartbeat management command
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].args
+          value: ["django-admin", "sync_heartbeat_incidents"]
+
+  - it: should use the argus image
+    set:
+      image.tag: "2.10.2"
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].image
+          value: "ghcr.io/uninett/argus:2.10.2"
+
+  - it: should not restart failed pods
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.restartPolicy
+          value: Never
+
+  - it: should have heartbeat component label
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.metadata.labels["app.kubernetes.io/component"]
+          value: heartbeat
+
+  - it: should mount settings configmap when set
+    set:
+      argus.djangoSettingsModuleConfigMap: my-settings
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.volumes[0].configMap.name
+          value: my-settings
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].volumeMounts[0].mountPath
+          value: /extrapython/argussettings

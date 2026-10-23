@@ -1,0 +1,80 @@
+{{- if .Values.heartbeat.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "argus.fullname" . }}-heartbeat
+  labels:
+    {{- include "argus.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.heartbeat.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          labels:
+            {{- include "argus.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: heartbeat
+        spec:
+          restartPolicy: Never
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          serviceAccountName: {{ include "argus.serviceAccountName" . }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
+          {{ if or .Values.argus.djangoSettingsModuleConfigMap .Values.argus.djangoLoggingModuleConfigMap }}
+          volumes:
+          {{ end }}
+          {{ if .Values.argus.djangoSettingsModuleConfigMap }}
+          - name: django-settings
+            configMap:
+              name: {{ .Values.argus.djangoSettingsModuleConfigMap }}
+          {{ end }}
+          {{ if .Values.argus.djangoLoggingModuleConfigMap }}
+          - name: django-logging
+            configMap:
+              name: {{ .Values.argus.djangoLoggingModuleConfigMap }}
+          {{ end }}
+          containers:
+            - name: {{ .Chart.Name }}-heartbeat
+              securityContext:
+                {{- toYaml .Values.securityContext | nindent 16 }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              args: ["django-admin", "sync_heartbeat_incidents"]
+              {{ if or .Values.argus.djangoSettingsModuleConfigMap .Values.argus.djangoLoggingModuleConfigMap }}
+              volumeMounts:
+              {{ end }}
+              {{ if .Values.argus.djangoSettingsModuleConfigMap }}
+              - name: django-settings
+                mountPath: "/extrapython/argussettings"
+              {{ end }}
+              {{ if .Values.argus.djangoLoggingModuleConfigMap }}
+              - name: django-logging
+                mountPath: "/extrapython/arguslogging"
+              {{ end }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+              env:
+                {{- include "argus.env" . | nindent 16 }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
