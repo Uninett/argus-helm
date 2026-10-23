@@ -1,16 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "argus.fullname" . }}
+  name: {{ include "argus.fullname" . }}-workers
   labels:
     {{- include "argus.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
+  replicas: {{ .Values.workers.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "argus.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: workers
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,6 +20,7 @@ spec:
       {{- end }}
       labels:
         {{- include "argus.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: workers
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -47,34 +49,6 @@ spec:
           name: {{ .Values.argus.djangoLoggingModuleConfigMap }}
       {{ end }}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.argus.port }}
-              protocol: TCP
-          livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
-          readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
-          {{ if or .Values.argus.djangoSettingsModuleConfigMap .Values.argus.djangoLoggingModuleConfigMap }}
-          volumeMounts:
-          {{ end }}
-          {{ if .Values.argus.djangoSettingsModuleConfigMap }}
-          - name: django-settings
-            mountPath: "/extrapython/argussettings"
-          {{ end }}
-          {{ if .Values.argus.djangoLoggingModuleConfigMap }}
-          - name: django-logging
-            mountPath: "/extrapython/arguslogging"
-          {{ end }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          env:
-            {{- include "argus.env" . | nindent 12 }}
         - name: {{ .Chart.Name }}-db-worker
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
