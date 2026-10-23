@@ -67,7 +67,7 @@ readinessProbe:
 
 livenessProbe:
   httpGet:
-    path: /
+    path: /.still-alive
     port: http
 
 resources: {}
