@@ -48,7 +48,7 @@ tests:
     asserts:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].image
-          value: "ghcr.io/uninett/argus:2.10.2"
+          value: "ghcr.io/uninett/argus-all-plugins:2.10.2"
 
   - it: should not restart failed pods
     asserts:

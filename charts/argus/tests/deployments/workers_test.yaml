@@ -104,12 +104,12 @@ tests:
 
   - it: should use the same image as the main deployment
     set:
-      image.repository: ghcr.io/uninett/argus
+      image.repository: ghcr.io/uninett/argus-all-plugins
       image.tag: "2.9.1"
     asserts:
       - equal:
           path: spec.template.spec.containers[0].image
-          value: "ghcr.io/uninett/argus:2.9.1"
+          value: "ghcr.io/uninett/argus-all-plugins:2.9.1"
 
   - it: should mount django-settings volume when configmap is set
     set:

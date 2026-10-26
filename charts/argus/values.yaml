@@ -16,7 +16,7 @@ heartbeat:
   schedule: "*/5 * * * *"
 
 image:
-  repository: ghcr.io/uninett/argus
+  repository: ghcr.io/uninett/argus-all-plugins
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: 2.10.2
@@ -73,7 +73,7 @@ readinessProbe:
 
 livenessProbe:
   httpGet:
-    path: /.still-alive
+    path: /
     port: http
 
 resources: {}
