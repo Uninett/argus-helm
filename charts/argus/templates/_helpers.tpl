@@ -89,7 +89,7 @@ Create the name of the service account to use
   value: {{ .Values.argus.databasePort | quote }}
 - name: DJANGO_LOGGING_MODULE
   value: {{ .Values.argus.djangoLoggingModule | quote }}
-- name: ARGUS_EMAIL
+- name: ADMIN_EMAIL
   value: {{ .Values.argus.argusEmail | quote }}
 - name: ARGUS_SEND_NOTIFICATIONS
   value: {{ .Values.argus.sendNotifications | quote }}
