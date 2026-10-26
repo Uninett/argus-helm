@@ -40,12 +40,12 @@ tests:
 
   - it: should use specified image tag
     set:
-      image.repository: ghcr.io/uninett/argus
+      image.repository: ghcr.io/uninett/argus-all-plugins
       image.tag: "2.9.0"
     asserts:
       - equal:
           path: spec.template.spec.containers[0].image
-          value: "ghcr.io/uninett/argus:2.9.0"
+          value: "ghcr.io/uninett/argus-all-plugins:2.9.0"
 
   - it: should fall back to appVersion when tag is empty
     set:
@@ -53,7 +53,7 @@ tests:
     asserts:
       - matchRegex:
           path: spec.template.spec.containers[0].image
-          pattern: "ghcr.io/uninett/argus:.+"
+          pattern: "ghcr.io/uninett/argus-all-plugins:.+"
 
   - it: should expose the argus port on the main container
     set:
